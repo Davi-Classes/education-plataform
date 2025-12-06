@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { CourseCard } from "./course-card";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Course = {
   id: string;
@@ -9,44 +9,22 @@ type Course = {
   description: string;
 };
 
-const coursesMock: Course[] = [
-  {
-    id: crypto.randomUUID(),
-    title: "Curso de ReactJS",
-    imageUrl: "https://wallpapercave.com/wp/wp2465923.jpg",
-    description: "Aprenda a biblioteca de frontend mais utilizada do mercado.",
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "APIs com FastAPI",
-    imageUrl:
-      "https://dkrn4sk0rn31v.cloudfront.net/uploads/2022/03/o-que-e-fastapi.png",
-    description: "Desenvolvimento APIs assíncronas com FastAPI",
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "NextJS",
-    imageUrl:
-      "https://dkrn4sk0rn31v.cloudfront.net/uploads/2021/01/conhecendo-o-next-js.png",
-    description: "Todo o poder de server side rendering e cache com NextJS",
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "Langchain",
-    imageUrl:
-      "https://framerusercontent.com/images/wBIfkv9ElvdBDjilQHkMwNuNegI.webp?width=2400&height=1260",
-    description:
-      "Aprenda o framework mais utilizado para criar agentes de inteligência artificial",
-  },
-];
+const API_URL = "https://education-plataform-api.onrender.com";
 
 export const Courses = () => {
   const [search, setSearch] = useState("");
-  const [courses, setCourses] = useState<Course[]>(coursesMock);
+  const [courses, setCourses] = useState<Course[]>([]);
 
-  const filteredCourses = courses.filter((course) =>
-    course.title.includes(search)
-  );
+  // Função "fetchCourses"
+  const fetchCourses = useCallback(async () => {
+    const res = await fetch(`${API_URL}/courses?search=${search}`);
+    return res.json();
+  }, [search]);
+
+  // useEffect chamando o "fetchCourses"
+  useEffect(() => {
+    fetchCourses().then((data) => setCourses(data));
+  }, [fetchCourses]);
 
   return (
     <main className="px-16">
@@ -67,10 +45,10 @@ export const Courses = () => {
         <section>
           <h2 className="text-2xl font-semibold mb-8">Cursos</h2>
           <div className="flex flex-wrap justify-between gap-8">
-            {filteredCourses.length == 0 && (
-              <p>Não foram encontrados cursos para essa pesquisa.</p>
+            {courses.length == 0 && (
+              <p className="text-lg">Não foram encontrados cursos.</p>
             )}
-            {filteredCourses.map((course) => (
+            {courses.map((course) => (
               <CourseCard
                 key={course.id}
                 title={course.title}
