@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
-import { findCourses } from "../services/course-service";
 import { CourseCard } from "./course-card";
 import { useQuery } from "@tanstack/react-query";
+import courseService from "../services/course-service";
 
 type CourseListProps = {
   search: string;
@@ -10,7 +10,7 @@ type CourseListProps = {
 export const Courses = ({ search }: CourseListProps) => {
   const { data, isPending, error } = useQuery({
     queryKey: ["courses", search],
-    queryFn: () => findCourses(search),
+    queryFn: () => courseService.findCourses(search),
   });
 
   if (error != null) {
@@ -31,7 +31,10 @@ export const Courses = ({ search }: CourseListProps) => {
 
   return (
     <div className="flex flex-wrap justify-between gap-8">
-      {data?.map((course) => (
+      {data.length == 0 && (
+        <p className="text-xl"> Não foram encontrados resultados. </p>
+      )}
+      {data.map((course) => (
         <CourseCard
           key={course.id}
           title={course.title}

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { Button } from "./button";
 
 export function Header() {
   const navigate = useNavigate();
@@ -18,15 +19,12 @@ export function Header() {
           <h1 className="text-2xl">Education Plataform</h1>
         </section>
         <section className="flex gap-4 items-center">
-          <button className="bg-indigo-600 text-white rounded-2xl px-8 py-2 duration-300 hover:cursor-pointer hover:bg-indigo-500 w-42 font-medium">
+          <Button>
             Cadastre-se
-          </button>
-          <button
-            onClick={() => navigate("/entrar")}
-            className="bg-indigo-600 text-white rounded-2xl px-8 py-2 duration-300 hover:cursor-pointer hover:bg-indigo-500 w-42 font-medium"
-          >
+          </Button>
+          <Button onClick={() => navigate("/entrar")}>
             Entrar
-          </button>
+          </Button>
         </section>
       </div>
     </header>

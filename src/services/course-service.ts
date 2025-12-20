@@ -7,7 +7,7 @@ type Course = {
   description: string;
 };
 
-export async function findCourses(search?: string): Promise<Course[]> {
+async function findCourses(search?: string): Promise<Course[]> {
 //   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const res = await fetch(
@@ -20,4 +20,8 @@ export async function findCourses(search?: string): Promise<Course[]> {
   }
 
   return res.json();
+}
+
+export default {
+  findCourses
 }
