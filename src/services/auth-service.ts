@@ -1,4 +1,5 @@
 import { API_URL } from "../lib/api";
+import { TOKEN_KEY } from "../lib/token";
 
 
 type SignInPayload = {
@@ -8,6 +9,31 @@ type SignInPayload = {
 
 type TokenResponse = {
   token: string;
+}
+
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+}
+
+async function getUser(): Promise<User> {
+  const accessToken = localStorage.getItem(TOKEN_KEY)
+
+  const res = await fetch(`${API_URL}/me`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+
+  if (!res.ok) {
+    const body = await res.json()
+    throw new Error(body.detail)
+  }
+
+  return res.json()
 }
 
 async function signIn(payload: SignInPayload): Promise<TokenResponse> {
@@ -30,5 +56,6 @@ async function signIn(payload: SignInPayload): Promise<TokenResponse> {
 }
 
 export default {
-  signIn
+  signIn,
+  getUser
 }

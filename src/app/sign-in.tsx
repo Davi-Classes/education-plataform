@@ -7,6 +7,9 @@ import { useMutation } from '@tanstack/react-query';
 import authService from '../services/auth-service'
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/auth-context';
+import { useNavigate } from 'react-router';
 
 const SignInSchema = z.object({
   email: z
@@ -20,6 +23,9 @@ const SignInSchema = z.object({
 type SignInPayload = z.infer<typeof SignInSchema>;
 
 export function SignIn() {
+  const navigate = useNavigate();
+  const { setAccessToken } = useContext(AuthContext)
+
   const { mutateAsync, isPending } = useMutation({
     mutationFn: authService.signIn,
     onError: (err) => {
@@ -42,13 +48,16 @@ export function SignIn() {
 
   const onSubmit = async (payload: SignInPayload) => {
     const { token } = await mutateAsync(payload)
-    
+
     toast.success('Logado com sucesso.', {
       style: {
         color: 'white',
         background: 'green'
       }
     })
+
+    setAccessToken(token)
+    navigate('/')
   }
 
   return (
